@@ -3,6 +3,7 @@ from Products.CMFQuickInstallerTool.interfaces import INonInstallable
 from five import grok
 from collective.grok import gs
 from zope.i18nmessageid import MessageFactory
+import wcc.multilingual.patches 
 
 # Set up the i18n message factory for our package
 MessageFactory = MessageFactory('wcc.multilingual')
