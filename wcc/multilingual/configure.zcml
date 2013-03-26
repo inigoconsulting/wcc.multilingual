@@ -16,6 +16,9 @@
     <include package=".behavior"/>
     <include package=".portlet"/>
 
+    <subscriber for="plone.multilingual.events.ObjectTranslatedEvent"
+                handler=".subscriber.set_default_translation"/>
+
     <!-- -*- extra stuff goes here -*- -->
 
 </configure>
