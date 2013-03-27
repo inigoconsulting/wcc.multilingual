@@ -1,3 +1,29 @@
+import logging
+logger = logging.getLogger('wcc.multilingual')
+
+def _patch_canonicals_cleanup():
+    # this cleanup the value of canonicals, so that we dont left with None
+    # dangling around
+
+    from plone.multilingual.storage import CanonicalStorage
+    from plone.app.uuid.utils import uuidToObject
+
+    if getattr(CanonicalStorage, '__wcc_canonical_cleanup_patch', False):
+        return
+    logger.info('Patching with canonical cleanup patch')
+
+    _orig_get_canonicals = CanonicalStorage.get_canonicals
+    def get_canonicals(self):
+        canonicals = _orig_get_canonicals(self)
+        for c in canonicals:
+            obj = uuidToObject(c)
+            if obj is None:
+                self.remove_canonical(c)
+        return _orig_get_canonicals(self)
+    CanonicalStorage.get_canonicals = get_canonicals
+    CanonicalStorage.__wcc_canonical_cleanup_patch = True
+
+_patch_canonicals_cleanup()
 
 def _patch_remove_nontranslated_selector():
     # this patch remove the languages from the selector if there are no
@@ -23,7 +49,9 @@ _patch_remove_nontranslated_selector()
 
 _marker = []
 def _patch_dexterity_languageindependentrelationlist():
-
+    # XXX: FIXME:
+    # This should be going upstream
+    # - add multilingual support for RelationList
     from plone.multilingualbehavior.utils import LanguageIndependentFieldsManager
 
     if getattr(LanguageIndependentFieldsManager, '__inigo_relationlist_patched', False):
@@ -84,7 +112,10 @@ def _patch_dexterity_languageindependentrelationlist():
 _patch_dexterity_languageindependentrelationlist()
 
 def _patch_archetypes_languageindependentreferencefield():
-    
+     # XXX: FIXME:
+    # This should be going upstream
+    # - add multilingual support for ReferenceField
+
     from archetypes.multilingual.utils import LanguageIndependentFieldsManager
 
     if getattr(LanguageIndependentFieldsManager, '__inigo_relationlist_patched', False):
