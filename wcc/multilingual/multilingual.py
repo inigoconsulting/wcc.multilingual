@@ -23,6 +23,8 @@ from five import grok
 
 _marker = []
 
+EXCLUDES=['language', 'creators', 'id', 'rights', 'contributors']
+
 class DexterityLanguageDependentFieldsManager(grok.Adapter):
     grok.context(IDexterityTranslatable)
     interface.implements(ILanguageDependentFieldsManager)
@@ -42,7 +44,7 @@ class DexterityLanguageDependentFieldsManager(grok.Adapter):
 
         for schema in schemas:
             for field_name in schema:
-                if field_name in ['language', 'creators', 'id']:
+                if field_name in EXCLUDES:
                     continue
                 if not ILanguageIndependentField.providedBy(schema[field_name]):
                     value = getattr(schema(self.context), field_name, _marker)
@@ -85,8 +87,7 @@ class ArchetypesLanguageDependentFieldsManager(grok.Adapter):
         schema = self.context.Schema()
         fields = schema.filterFields(languageIndependent=False)
         fields_to_copy = [x for x in fields if x.getName() in dest_schema]
-        fields_to_copy = [x for x in fields if x.getName() not in ['language',
-                            'creators', 'id']]
+        fields_to_copy = [x for x in fields if x.getName() not in EXCLUDES]
         for field in fields_to_copy:
             self._copy_field(field, translation)
     
