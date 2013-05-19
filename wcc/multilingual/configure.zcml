@@ -16,6 +16,12 @@
     <include package=".behavior"/>
     <include package=".portlet"/>
 
+    <interface interface=".interfaces.ITranslationDateEnabled"/>
+
+    <class class="Products.ATContentTypes.content.newsitem.ATNewsItem">
+       <implements interface="wcc.multilingual.interfaces.ITranslationDateEnabled"/>
+    </class>
+
     <subscriber for="plone.multilingual.events.ObjectTranslatedEvent"
                 handler=".subscriber.set_default_translation"/>
 
