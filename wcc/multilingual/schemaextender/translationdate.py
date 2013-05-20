@@ -31,6 +31,10 @@ class TranslationDate(grok.Adapter):
         ExtensionDateTimeField('translation_date',
             required=0,
             schemata='dates',
+            storage=atapi.AttributeStorage(),
+            widget=ExtensionDateTimeField._properties['widget'](
+                label=_(u'Translation Date')
+            )
         )
     ]
 
