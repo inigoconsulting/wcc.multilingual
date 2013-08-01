@@ -15,10 +15,12 @@ def _patch_canonicals_cleanup():
     _orig_get_canonicals = CanonicalStorage.get_canonicals
     def get_canonicals(self):
         canonicals = _orig_get_canonicals(self)
+        to_remove = []
         for c in canonicals:
-            obj = uuidToObject(c)
-            if obj is None:
-                self.remove_canonical(c)
+            if uuidToObject(c) is None:
+                to_remove.append(c)
+        for c in to_remove:
+            self.remove_canonical(c)
         return _orig_get_canonicals(self)
     CanonicalStorage.get_canonicals = get_canonicals
     CanonicalStorage.__wcc_canonical_cleanup_patch = True
